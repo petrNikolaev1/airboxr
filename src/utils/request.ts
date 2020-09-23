@@ -1,54 +1,60 @@
-export class ResponseError extends Error {
-  public response: Response;
+import axios, { CancelToken } from 'axios';
+import { get } from 'lodash';
 
-  constructor(response: Response) {
-    super(response.statusText);
-    this.response = response;
-  }
-}
-/**
- * Parses the JSON returned by a network request
- *
- * @param  {object} response A response from a network request
- *
- * @return {object}          The parsed JSON from the request
- */
-function parseJSON(response: Response) {
-  if (response.status === 204 || response.status === 205) {
-    return null;
-  }
-  return response.json();
-}
+import { API_URL, API_TOKEN } from 'constants/index';
 
-/**
- * Checks if a network request came back fine, and throws an error if not
- *
- * @param  {object} response   A response from a network request
- *
- * @return {object|undefined} Returns either the response, or throws an error
- */
-function checkStatus(response: Response) {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
+const errorResponseHandler = error => {
+  const response = get(error, 'response');
+  if (response) {
+    return Promise.reject(error);
   }
-  const error = new ResponseError(response);
-  error.response = response;
-  throw error;
-}
+};
 
-/**
- * Requests a URL, returning a promise
- *
- * @param  {string} url       The URL we want to request
- * @param  {object} [options] The options we want to pass to "fetch"
- *
- * @return {object}           The response data
- */
-export async function request(
-  url: string,
-  options?: RequestInit,
-): Promise<{} | { err: ResponseError }> {
-  const fetchResponse = await fetch(url, options);
-  const response = checkStatus(fetchResponse);
-  return parseJSON(response);
-}
+export const request = axios.create({
+  baseURL: `${API_URL}/`,
+});
+
+const cancel = {};
+
+request.interceptors.request.use(config => {
+  /*
+  To cancel non-actual requests
+   */
+  const requestId = get(config, 'params.requestId');
+
+  if (requestId) {
+    if (cancel[requestId]) {
+      cancel[requestId]();
+    }
+
+    // @ts-ignore
+    config.cancelToken = new CancelToken(function executor(c) {
+      cancel[requestId] = c;
+    });
+  }
+
+  /*
+  To handle Auth
+   */
+
+  config.headers.Authorization = `Bearer ${API_TOKEN}`;
+
+  return config;
+});
+
+request.interceptors.response.use(response => response, errorResponseHandler);
+
+export const requestMiddleware = request => async (data?: any) => {
+  try {
+    const response = await request(data);
+    return { res: response.data };
+  } catch (error) {
+    const errorData = error.response?.data;
+
+    return {
+      err: errorData || { detail: error.toString() },
+    };
+  }
+};
+
+export default request;

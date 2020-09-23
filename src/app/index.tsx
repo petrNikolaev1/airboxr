@@ -8,27 +8,34 @@
 
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Switch, Route, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import { GlobalStyle } from '../styles/global-styles';
+import { GlobalStyle } from 'styles/global-styles';
 
+import { NotFoundPage } from './components/NotFoundPage/Loadable';
 import { HomePage } from './containers/HomePage/Loadable';
-import { NotFoundPage } from './containers/NotFoundPage/Loadable';
+import { SourcesPage } from './containers/SourcesPage/Loadable';
+import { SourcePage } from './containers/SourcePage/Loadable';
+import { SourcesProvider } from './containers/SourcesProvider';
 
 export function App() {
   return (
     <BrowserRouter>
-      <Helmet
-        titleTemplate="%s - React Boilerplate"
-        defaultTitle="React Boilerplate"
-      >
-        <meta name="description" content="A React Boilerplate application" />
+      <Helmet titleTemplate="%s - Airboxr" defaultTitle="Airboxr">
+        <meta name="description" content="Airboxr application" />
       </Helmet>
-
-      <Switch>
-        <Route exact path={process.env.PUBLIC_URL + '/'} component={HomePage} />
-        <Route component={NotFoundPage} />
-      </Switch>
+      <SourcesProvider>
+        <Switch>
+          <Route exact path="/" component={HomePage} />
+          <Route exact path="/sources" component={SourcesPage} />
+          <Route
+            exact
+            path="/sources/:sourceId/:intendedTable?"
+            component={SourcePage}
+          />
+          <Route component={NotFoundPage} />
+        </Switch>
+      </SourcesProvider>
       <GlobalStyle />
     </BrowserRouter>
   );

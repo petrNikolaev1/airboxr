@@ -1,19 +1,14 @@
 {
-  "routingFeature": {
-    "title": "Industry-standard Routing",
-    "description": "It's natural to want to add pages (e.g. `/about`) to your application, and routing makes this possible."
-  },
-  "i18nFeature": {
-    "title": "i18n Internationalization & Pluralization",
-    "selectLanguage": "Select Language",
-    "description": "Scalable apps need to support multiple languages, easily add and support multiple languages. Change the language below to see how instantly it updates the page without refreshing."
-  },
-  "feedbackFeature": {
-    "title": "Instant Feedback",
-    "description": "Enjoy the best DX and code your app at the speed of thought! Your saved changes to the CSS and JS are reflected instantaneously without refreshing the page."
-  },
-  "scaffoldingFeature": {
-    "title": "Quick Scaffolding",
-    "description": "Automate the creation of components, features, routes, selectors and sagas - and their tests - right from the CLI! Avoid fighting the glue of your code and focus on your app!"
-  }
+  "home page title": "What would you like to do today?",
+  "home page subtitle": "Welcome to Airboxr. Let`s start with the tasks you want to accomplish today.",
+  "import data": "import data",
+  "lookup data": "lookup data",
+  "sources page title": "Select source.",
+  "sources page subtitle": "Below is a list of the sources you have connected. Please choose the data source you would like to import data from.",
+  "source page title": "Select table",
+  "source page subtitle": "{{source}} has the following tables ready for import. Please select the tables you would like to import.",
+  "sources error": "Error occurred while obtaining sources list",
+  "chat": "chat",
+  "next": "next",
+  "filter": "Filter"
 }
